@@ -1,0 +1,48 @@
+Create demo/demo_excel_parser.py.
+
+Requirements:
+
+1.
+
+from tools.excel_parser import ExcelParser
+
+2.
+
+Create main().
+
+3.
+
+Read:
+
+sample.xlsx
+
+4.
+
+Use:
+
+parser = ExcelParser()
+
+result = parser.parse(
+    file_path="sample.xlsx"
+)
+
+5.
+
+Print:
+
+headers
+
+sample_rows
+
+total_rows
+
+6.
+
+Use:
+
+if __name__ == "__main__":
+    main()
+
+7.
+
+Do not modify README.
