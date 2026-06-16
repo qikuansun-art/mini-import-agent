@@ -1,29 +1,37 @@
 from collections import defaultdict
+from pathlib import Path
+import sys
 
-from tools.data_validator import DataValidator
-from tools.excel_parser import ExcelParser
-from tools.field_mapper import FieldMapper
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+from agent.state import AgentState, WorkflowState
+from workflow.executor import ImportWorkflowExecutor
 
 
 def main() -> None:
-    parsed = ExcelParser().parse("sample.xlsx")
-    mappings = FieldMapper().map_headers(parsed["headers"])
-    validation_errors = DataValidator().validate(parsed["sample_rows"], mappings)
+    state = AgentState(
+        task_id="demo-import",
+        current_state=WorkflowState.INIT,
+        file_path="sample.xlsx",
+    )
+
+    executor = ImportWorkflowExecutor()
+    state = executor.run(state)
 
     print("======== IMPORT REPORT ========")
-    print(f"Rows: {parsed['total_rows']}")
+    print(f"Rows: {len(state.sample_rows)}")
     print()
     print("Field Mapping")
-    for mapping in mappings:
+    for mapping in state.mappings:
         if not mapping.target_field:
             continue
         print(f"{mapping.source_header} -> {mapping.target_field}")
 
     print()
     print("Validation Errors")
-    if validation_errors:
+    if state.validation_errors:
         errors_by_row = defaultdict(list)
-        for error in validation_errors:
+        for error in state.validation_errors:
             errors_by_row[error.row].append(error)
 
         for row in sorted(errors_by_row):
@@ -32,6 +40,11 @@ def main() -> None:
                 print(error.message)
     else:
         print("No validation errors.")
+
+    print()
+    print("History")
+    for item in state.history:
+        print(f"{item.state.value}: {item.action} - {item.message}")
 
     print("================================")
 
