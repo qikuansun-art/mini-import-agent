@@ -1,0 +1,15 @@
+# Python
+__pycache__/
+*.pyc
+
+# Excel temp
+~$*.xlsx
+
+# Test files
+sample.xlsx
+
+# VSCode
+.vscode/
+
+# Python virtual env
+.venv/
