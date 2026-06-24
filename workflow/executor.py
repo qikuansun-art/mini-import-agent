@@ -67,6 +67,14 @@ class ImportWorkflowExecutor:
                     action="user_confirm",
                     message="Generated import confirmation summary",
                 )
+                if state.user_cancelled:
+                    state.move_to(WorkflowState.CANCELLED)
+                    state.add_history(
+                        action="user_cancelled",
+                        message="User cancelled import",
+                    )
+                    return state
+
                 if not state.user_confirmed:
                     return state
 
@@ -81,6 +89,9 @@ class ImportWorkflowExecutor:
                 return state
 
             if state.current_state == WorkflowState.ERROR:
+                return state
+
+            if state.current_state == WorkflowState.CANCELLED:
                 return state
 
             return self.state_machine.move_to_error(

@@ -13,7 +13,11 @@ class ImportStateMachine:
     )
 
     def next_state(self, current_state: WorkflowState) -> WorkflowState:
-        if current_state in (WorkflowState.REPORT, WorkflowState.ERROR):
+        if current_state in (
+            WorkflowState.REPORT,
+            WorkflowState.ERROR,
+            WorkflowState.CANCELLED,
+        ):
             return current_state
 
         current_index = self._transition_order.index(current_state)
@@ -51,4 +55,8 @@ class ImportStateMachine:
         return state
 
     def is_finished(self, state: AgentState) -> bool:
-        return state.current_state in (WorkflowState.REPORT, WorkflowState.ERROR)
+        return state.current_state in (
+            WorkflowState.REPORT,
+            WorkflowState.ERROR,
+            WorkflowState.CANCELLED,
+        )

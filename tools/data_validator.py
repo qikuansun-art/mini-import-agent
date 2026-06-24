@@ -1,5 +1,6 @@
 from agent.state import FieldMappingItem, ValidationError
 from knowledge.standard_fields import STANDARD_FIELDS
+import pandas as pd
 
 
 class DataValidator:
@@ -55,7 +56,14 @@ class DataValidator:
 
     @staticmethod
     def _is_empty(value: object) -> bool:
-        return value is None or (isinstance(value, str) and value.strip() == "")
+        if value is None:
+            return True
+        if isinstance(value, str):
+            return value.strip() == ""
+        try:
+            return bool(pd.isna(value))
+        except (TypeError, ValueError):
+            return False
 
     @staticmethod
     def _is_numeric(value: object) -> bool:

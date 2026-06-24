@@ -13,6 +13,7 @@ class WorkflowState(str, Enum):
     IMPORT = "IMPORT"
     REPORT = "REPORT"
     ERROR = "ERROR"
+    CANCELLED = "CANCELLED"
 
 
 class ErrorInfo(BaseModel):
@@ -68,6 +69,7 @@ class AgentState(BaseModel):
     import_result: ImportResult | None = None
     user_message: str | None = None
     user_confirmed: bool = False
+    user_cancelled: bool = False
     errors: list[ErrorInfo] = Field(default_factory=list)
     history: list[HistoryItem] = Field(default_factory=list)
 
