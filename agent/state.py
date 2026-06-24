@@ -67,6 +67,7 @@ class AgentState(BaseModel):
     validation_errors: list[ValidationError] = Field(default_factory=list)
     import_result: ImportResult | None = None
     user_message: str | None = None
+    user_confirmed: bool = False
     errors: list[ErrorInfo] = Field(default_factory=list)
     history: list[HistoryItem] = Field(default_factory=list)
 

@@ -13,6 +13,7 @@ def main() -> None:
         task_id="demo-import",
         current_state=WorkflowState.INIT,
         file_path="sample.xlsx",
+        user_confirmed=True,
     )
 
     executor = ImportWorkflowExecutor()

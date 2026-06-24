@@ -67,6 +67,9 @@ class ImportWorkflowExecutor:
                     action="user_confirm",
                     message="Generated import confirmation summary",
                 )
+                if not state.user_confirmed:
+                    return state
+
                 return self.state_machine.move_next(state)
 
             if state.current_state == WorkflowState.IMPORT:
@@ -126,7 +129,15 @@ class ImportWorkflowExecutor:
                     error_message="Max steps exceeded",
                 )
 
+            previous_state = state.current_state
             state = self.execute_step(state)
             steps += 1
+
+            if (
+                previous_state == WorkflowState.USER_CONFIRM
+                and state.current_state == WorkflowState.USER_CONFIRM
+                and not state.user_confirmed
+            ):
+                return state
 
         return state
