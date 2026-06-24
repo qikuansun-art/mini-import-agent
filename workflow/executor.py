@@ -119,6 +119,12 @@ class ImportWorkflowExecutor:
         if state.validation_errors:
             for error in state.validation_errors:
                 lines.append(f"- {error.message}")
+
+            fix_suggestions = self.build_fix_suggestions(state)
+            if fix_suggestions:
+                lines.extend(["", "Fix Suggestions:"])
+                for suggestion in fix_suggestions:
+                    lines.append(f"- {suggestion}")
         else:
             lines.append("- No validation errors")
 
@@ -129,6 +135,24 @@ class ImportWorkflowExecutor:
             lines.append("- Safe to import")
 
         return "\n".join(lines)
+
+    def build_fix_suggestions(self, state: AgentState) -> list[str]:
+        suggestion_rules = [
+            ("item_no is required", "请补充清单编号/元件编号。"),
+            ("length should be numeric", "长必须填写纯数字，例如 1000。"),
+            ("width is required", "请补充宽度。"),
+            ("quantity is required", "请补充数量，通常可以填写 1。"),
+        ]
+        suggestions: list[str] = []
+        seen: set[str] = set()
+
+        for error in state.validation_errors:
+            for message_fragment, suggestion in suggestion_rules:
+                if message_fragment in error.message and suggestion not in seen:
+                    suggestions.append(suggestion)
+                    seen.add(suggestion)
+
+        return suggestions
 
     def run(self, state: AgentState, max_steps: int = 20) -> AgentState:
         steps = 0
