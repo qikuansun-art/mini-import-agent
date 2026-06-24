@@ -21,11 +21,18 @@ def main() -> None:
     print("======== IMPORT REPORT ========")
     print(f"Rows: {len(state.sample_rows)}")
     print()
+    print("Parsed Headers")
+    for header in state.headers:
+        print(f"{header.index}: {header.name}")
+
+    print()
     print("Field Mapping")
     for mapping in state.mappings:
-        if not mapping.target_field:
-            continue
-        print(f"{mapping.source_header} -> {mapping.target_field}")
+        target_field = mapping.target_field or "UNMATCHED"
+        print(
+            f"{mapping.source_header} -> {target_field} "
+            f"({mapping.confidence:.2f}, {mapping.source})"
+        )
 
     print()
     print("Validation Errors")
