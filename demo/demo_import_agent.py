@@ -49,6 +49,13 @@ def main() -> None:
         print("No validation errors.")
 
     print()
+    print("Confirmation Summary")
+    if state.user_message:
+        print(state.user_message)
+    else:
+        print("No confirmation summary.")
+
+    print()
     print("History")
     for item in state.history:
         print(f"{item.state.value}: {item.action} - {item.message}")

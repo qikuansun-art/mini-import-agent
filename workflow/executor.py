@@ -62,9 +62,10 @@ class ImportWorkflowExecutor:
                 return self.state_machine.move_next(state)
 
             if state.current_state == WorkflowState.USER_CONFIRM:
+                state.user_message = self.build_confirmation_summary(state)
                 state.add_history(
                     action="user_confirm",
-                    message="User confirmation step placeholder",
+                    message="Generated import confirmation summary",
                 )
                 return self.state_machine.move_next(state)
 
@@ -89,6 +90,31 @@ class ImportWorkflowExecutor:
                 error_message=f"Failed to execute {state.current_state.value}",
                 raw_error=str(exc),
             )
+
+    def build_confirmation_summary(self, state: AgentState) -> str:
+        lines = [
+            "=== Import Confirmation ===",
+            "",
+            "Field Mapping:",
+        ]
+
+        for mapping in state.mappings:
+            lines.append(f"{mapping.source_header} -> {mapping.target_field}")
+
+        lines.extend(["", "Validation:"])
+        if state.validation_errors:
+            for error in state.validation_errors:
+                lines.append(f"- {error.message}")
+        else:
+            lines.append("- No validation errors")
+
+        lines.extend(["", "Recommendation:"])
+        if state.validation_errors:
+            lines.append("- User review required")
+        else:
+            lines.append("- Safe to import")
+
+        return "\n".join(lines)
 
     def run(self, state: AgentState, max_steps: int = 20) -> AgentState:
         steps = 0

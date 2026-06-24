@@ -1,0 +1,65 @@
+Implement intelligent USER_CONFIRM summary.
+
+Goal:
+Generate a confirmation summary before IMPORT.
+
+Requirements:
+
+1. In workflow/executor.py
+
+Replace USER_CONFIRM placeholder logic.
+
+2. Add a new method:
+
+build_confirmation_summary(state)
+
+Return a string containing:
+
+=== Import Confirmation ===
+
+Field Mapping:
+[source_header] -> [target_field]
+
+Validation:
+- No validation errors
+
+or
+
+Validation:
+- xxx
+- xxx
+
+Recommendation:
+- Safe to import
+
+or
+
+- User review required
+
+3. During USER_CONFIRM state:
+
+Generate summary.
+
+Store it into:
+
+state.user_message
+
+Add history:
+
+action="user_confirm"
+
+message="Generated import confirmation summary"
+
+4. Update demo/demo_import_agent.py
+
+Print:
+
+Confirmation Summary
+
+before History section.
+
+5. Do not modify workflow transitions.
+
+6. Keep code simple and readable.
+
+After implementation explain all changes.

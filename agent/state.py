@@ -66,6 +66,7 @@ class AgentState(BaseModel):
     mappings: list[FieldMappingItem] = Field(default_factory=list)
     validation_errors: list[ValidationError] = Field(default_factory=list)
     import_result: ImportResult | None = None
+    user_message: str | None = None
     errors: list[ErrorInfo] = Field(default_factory=list)
     history: list[HistoryItem] = Field(default_factory=list)
 
