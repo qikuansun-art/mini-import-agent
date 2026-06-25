@@ -1,9 +1,11 @@
 from agent.state import FieldMappingItem
 from knowledge.standard_fields import STANDARD_FIELDS
+from tools.llm_field_mapper import LLMFieldMapper
 
 
 class FieldMapper:
     def __init__(self) -> None:
+        self.llm_field_mapper = LLMFieldMapper()
         self._exact_aliases = {}
         self._case_insensitive_aliases = {}
 
@@ -59,13 +61,7 @@ class FieldMapper:
                 continue
 
             mappings.append(
-                FieldMappingItem(
-                    source_header=header,
-                    target_field="",
-                    confidence=0.0,
-                    reason="No matching standard field",
-                    source="unmatched",
-                )
+                self.llm_field_mapper.infer_header(header, STANDARD_FIELDS)
             )
 
         return mappings
