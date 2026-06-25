@@ -1,30 +1,23 @@
-Create demo/demo_import_agent_llm_headers.py.
+Fix size_spec validation integration.
 
-Goal:
-Verify that ImportWorkflowExecutor can use FieldMapper with mock LLM fallback on unfamiliar Excel headers.
+Problem:
+expand_size_spec_rows adds row["length"], row["width"], row["thickness"],
+but DataValidator only validates fields that exist in mappings.
+So length and width are still reported missing.
 
 Requirements:
 
-1. Create a temporary Excel file named sample_llm_headers.xlsx.
+1. In workflow/executor.py:
+After expanding size_spec, ensure state.mappings contains virtual FieldMappingItem for:
+- source_header="length", target_field="length", confidence=1.0, source="size_parser"
+- source_header="width", target_field="width", confidence=1.0, source="size_parser"
+- source_header="thickness", target_field="thickness", confidence=1.0, source="size_parser"
 
-2. Headers:
-货号 | 板材名称 | 规格尺寸 | 加工方式 | 块数 | 未知字段
+2. Only add a virtual mapping if that target_field is not already mapped.
 
-3. Create 3 rows:
-A001 | 台面A | 1000x600x20 | 直切 | 1 | 测试
-A002 | 台面B | 1200x700x20 | 开孔 | 2 | 测试
-A003 | 背景墙C | 1800x900x18 | 异形 | 1 | 测试
+3. reason should be:
+"Derived from size_spec"
 
-4. Run ImportWorkflowExecutor with user_confirmed=False.
-
-5. Print:
-- Parsed Headers
-- Field Mapping with confidence, source, reason
-- Validation Errors
-- Confirmation Summary
-- Current State
-- History
-
-6. Do not modify README files.
+4. Do not modify README files.
 
 After changes, explain what changed.

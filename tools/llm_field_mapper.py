@@ -21,9 +21,9 @@ class LLMFieldMapper:
         if "规格" in normalized_header or "尺寸" in normalized_header:
             return FieldMappingItem(
                 source_header=header,
-                target_field="remark",
-                confidence=0.60,
-                reason="Mock LLM inferred dimension-like field; needs user review",
+                target_field="size_spec",
+                confidence=0.75,
+                reason="Mock LLM inferred a size specification field that may be parsed into length, width and thickness",
                 source="mock_llm",
             )
 

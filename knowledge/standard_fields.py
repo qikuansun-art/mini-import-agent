@@ -30,6 +30,12 @@ STANDARD_FIELDS = [
         "required": False,
     },
     {
+        "field": "size_spec",
+        "display_name": "规格尺寸",
+        "aliases": ["规格", "尺寸", "规格尺寸", "尺寸规格", "size_spec"],
+        "required": False,
+    },
+    {
         "field": "material",
         "display_name": "材质",
         "aliases": ["材质", "石材", "材料", "material"],
