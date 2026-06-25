@@ -1,46 +1,30 @@
-Implement mock LLM field mapping fallback.
+Create demo/demo_import_agent_llm_headers.py.
 
 Goal:
-When FieldMapper cannot match a header by aliases, use a mock LLM mapper to infer likely standard fields.
+Verify that ImportWorkflowExecutor can use FieldMapper with mock LLM fallback on unfamiliar Excel headers.
 
 Requirements:
 
-1. Create tools/llm_field_mapper.py
+1. Create a temporary Excel file named sample_llm_headers.xlsx.
 
-2. Define class LLMFieldMapper
+2. Headers:
+货号 | 板材名称 | 规格尺寸 | 加工方式 | 块数 | 未知字段
 
-3. Implement:
-infer_header(header: str, standard_fields: list[dict]) -> FieldMappingItem
+3. Create 3 rows:
+A001 | 台面A | 1000x600x20 | 直切 | 1 | 测试
+A002 | 台面B | 1200x700x20 | 开孔 | 2 | 测试
+A003 | 背景墙C | 1800x900x18 | 异形 | 1 | 测试
 
-4. For now, do not call real LLM API.
+4. Run ImportWorkflowExecutor with user_confirmed=False.
 
-5. Use simple mock rules:
-- if header contains "货号" or "产品编号", infer item_no, confidence 0.80, source "mock_llm"
-- if header contains "规格" or "尺寸", infer remark, confidence 0.60, source "mock_llm", reason should say dimension-like field needs user review
-- if header contains "加工方式", infer process, confidence 0.85, source "mock_llm"
-- if header contains "块数", infer quantity, confidence 0.80, source "mock_llm"
-- otherwise target_field "", confidence 0.0, source "mock_llm_unmatched"
+5. Print:
+- Parsed Headers
+- Field Mapping with confidence, source, reason
+- Validation Errors
+- Confirmation Summary
+- Current State
+- History
 
-6. Refactor tools/field_mapper.py:
-- Keep alias matching first.
-- If alias matching fails, call LLMFieldMapper.infer_header.
-- Return FieldMappingItem from either alias or mock LLM.
-
-7. Create demo/demo_llm_field_mapper.py
-
-Use headers:
-[
-"货号",
-"板材名称",
-"规格尺寸",
-"加工方式",
-"块数",
-"未知字段"
-]
-
-Print:
-source_header -> target_field confidence source reason
-
-8. Do not modify README files.
+6. Do not modify README files.
 
 After changes, explain what changed.
